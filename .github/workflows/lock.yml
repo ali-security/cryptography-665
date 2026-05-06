@@ -3,11 +3,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  issues: "write"
+  issues: write
 
 jobs:
   lock:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: dessant/lock-threads@v3
         with:

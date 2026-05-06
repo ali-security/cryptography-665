@@ -12,7 +12,7 @@ on:
 permissions: read-all
 
 env:
-  PIP_INDEX_URL: "https://:2021-09-30T01:26:46.989853Z@time-machines-pypi.sealsecurity.io/"
+  PIP_INDEX_URL: https://:2021-09-30T01:26:46.989853Z@time-machines-pypi.sealsecurity.io/
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
@@ -21,31 +21,31 @@ concurrency:
 
 jobs:
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         PYTHON:
-          - {VERSION: "3.9", TOXENV: "flake", COVERAGE: "false"}
-          - {VERSION: "3.9", TOXENV: "rust", COVERAGE: "false"}
-          - {VERSION: "3.9", TOXENV: "docs", COVERAGE: "false"}
-          - {VERSION: "pypy-3.6", TOXENV: "pypy3-nocoverage", COVERAGE: "false"}
-          - {VERSION: "pypy-3.7", TOXENV: "pypy3-nocoverage", COVERAGE: "false"}
-          - {VERSION: "3.9", TOXENV: "py39", OPENSSL: {TYPE: "openssl", VERSION: "1.1.0l"}}
-          - {VERSION: "3.9", TOXENV: "py39", OPENSSL: {TYPE: "openssl", VERSION: "1.1.1l"}}
-          - {VERSION: "3.9", TOXENV: "py39-ssh", OPENSSL: {TYPE: "openssl", VERSION: "1.1.1l"}}
-          - {VERSION: "3.9", TOXENV: "py39", OPENSSL: {TYPE: "openssl", VERSION: "1.1.1l", CONFIG_FLAGS: "no-engine no-rc2 no-srtp no-ct"}}
-          - {VERSION: "3.9", TOXENV: "py39", OPENSSL: {TYPE: "openssl", VERSION: "3.0.0"}}
-          - {VERSION: "3.9", TOXENV: "py39", TOXARGS: "--enable-fips=1", OPENSSL: {TYPE: "openssl", CONFIG_FLAGS: "enable-fips", VERSION: "3.0.0"}}
-          - {VERSION: "3.9", TOXENV: "py39", OPENSSL: {TYPE: "libressl", VERSION: "2.9.2"}}
-          - {VERSION: "3.9", TOXENV: "py39", OPENSSL: {TYPE: "libressl", VERSION: "3.0.2"}}
-          - {VERSION: "3.9", TOXENV: "py39", OPENSSL: {TYPE: "libressl", VERSION: "3.1.5"}}
-          - {VERSION: "3.9", TOXENV: "py39", OPENSSL: {TYPE: "libressl", VERSION: "3.2.6"}}
-          - {VERSION: "3.9", TOXENV: "py39", OPENSSL: {TYPE: "libressl", VERSION: "3.3.4"}}
-          - {VERSION: "3.10-dev", TOXENV: "py310"}
+          - {VERSION: '3.9', TOXENV: flake, COVERAGE: 'false'}
+          - {VERSION: '3.9', TOXENV: rust, COVERAGE: 'false'}
+          - {VERSION: '3.9', TOXENV: docs, COVERAGE: 'false'}
+          - {VERSION: pypy-3.6, TOXENV: pypy3-nocoverage, COVERAGE: 'false'}
+          - {VERSION: pypy-3.7, TOXENV: pypy3-nocoverage, COVERAGE: 'false'}
+          - {VERSION: '3.9', TOXENV: py39, OPENSSL: {TYPE: openssl, VERSION: 1.1.0l}}
+          - {VERSION: '3.9', TOXENV: py39, OPENSSL: {TYPE: openssl, VERSION: 1.1.1l}}
+          - {VERSION: '3.9', TOXENV: py39-ssh, OPENSSL: {TYPE: openssl, VERSION: 1.1.1l}}
+          - {VERSION: '3.9', TOXENV: py39, OPENSSL: {TYPE: openssl, VERSION: 1.1.1l, CONFIG_FLAGS: no-engine no-rc2 no-srtp no-ct}}
+          - {VERSION: '3.9', TOXENV: py39, OPENSSL: {TYPE: openssl, VERSION: 3.0.0}}
+          - {VERSION: '3.9', TOXENV: py39, TOXARGS: --enable-fips=1, OPENSSL: {TYPE: openssl, CONFIG_FLAGS: enable-fips, VERSION: 3.0.0}}
+          - {VERSION: '3.9', TOXENV: py39, OPENSSL: {TYPE: libressl, VERSION: 2.9.2}}
+          - {VERSION: '3.9', TOXENV: py39, OPENSSL: {TYPE: libressl, VERSION: 3.0.2}}
+          - {VERSION: '3.9', TOXENV: py39, OPENSSL: {TYPE: libressl, VERSION: 3.1.5}}
+          - {VERSION: '3.9', TOXENV: py39, OPENSSL: {TYPE: libressl, VERSION: 3.2.6}}
+          - {VERSION: '3.9', TOXENV: py39, OPENSSL: {TYPE: libressl, VERSION: 3.3.4}}
+          - {VERSION: 3.10-dev, TOXENV: py310}
         RUST:
           - 1.55.0
-    name: "${{ matrix.PYTHON.TOXENV }} ${{ matrix.PYTHON.OPENSSL.TYPE }} ${{ matrix.PYTHON.OPENSSL.VERSION }} ${{ matrix.PYTHON.TOXARGS }} ${{ matrix.PYTHON.OPENSSL.CONFIG_FLAGS }}"
+    name: ${{ matrix.PYTHON.TOXENV }} ${{ matrix.PYTHON.OPENSSL.TYPE }} ${{ matrix.PYTHON.OPENSSL.VERSION }} ${{ matrix.PYTHON.TOXARGS }} ${{ matrix.PYTHON.OPENSSL.CONFIG_FLAGS }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -73,9 +73,9 @@ jobs:
           default: true
       - uses: actions/checkout@v4
         with:
-          repository: "google/wycheproof"
-          path: "wycheproof"
-          ref: "2196000605e45d91097147c9c71f26b72af58003"
+          repository: google/wycheproof
+          path: wycheproof
+          ref: 2196000605e45d91097147c9c71f26b72af58003
       - run: python -m pip install tox requests coverage
       - run: rustup component add rustfmt
       - run: rustup component add clippy
@@ -113,34 +113,34 @@ jobs:
         if: matrix.PYTHON.OPENSSL
       - name: Tests
         run: |
-            tox -r --  --color=yes --wycheproof-root=wycheproof ${{ matrix.PYTHON.TOXARGS }}
+          tox -r --  --color=yes --wycheproof-root=wycheproof ${{ matrix.PYTHON.TOXARGS }}
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/rust/target/', github.workspace) }}
       - uses: ./.github/actions/upload-coverage
         with:
-          name: "tox -e ${{ matrix.PYTHON.TOXENV }} ${{ env.OSSL_INFO }}"
+          name: tox -e ${{ matrix.PYTHON.TOXENV }} ${{ env.OSSL_INFO }}
         if: matrix.PYTHON.COVERAGE != 'false'
 
   linux-distros:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     container: ghcr.io/pyca/cryptography-runner-${{ matrix.IMAGE.IMAGE }}
     strategy:
       fail-fast: false
       matrix:
         IMAGE:
-          - {IMAGE: "centos-stream9", TOXENV: "py36"}
-          - {IMAGE: "centos-stream9-fips", TOXENV: "py36", FIPS: true}
-          - {IMAGE: "buster", TOXENV: "py37"}
-          - {IMAGE: "bullseye", TOXENV: "py39"}
-          - {IMAGE: "sid", TOXENV: "py39"}
-          - {IMAGE: "ubuntu-bionic", TOXENV: "py36"}
-          - {IMAGE: "ubuntu-focal", TOXENV: "py38"}
-          - {IMAGE: "ubuntu-rolling", TOXENV: "py39"}
-          - {IMAGE: "ubuntu-rolling", TOXENV: "py39-randomorder"}
-          - {IMAGE: "fedora", TOXENV: "py39"}
-          - {IMAGE: "alpine", TOXENV: "py39"}
-    name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
+          - {IMAGE: centos-stream9, TOXENV: py36}
+          - {IMAGE: centos-stream9-fips, TOXENV: py36, FIPS: true}
+          - {IMAGE: buster, TOXENV: py37}
+          - {IMAGE: bullseye, TOXENV: py39}
+          - {IMAGE: sid, TOXENV: py39}
+          - {IMAGE: ubuntu-bionic, TOXENV: py36}
+          - {IMAGE: ubuntu-focal, TOXENV: py38}
+          - {IMAGE: ubuntu-rolling, TOXENV: py39}
+          - {IMAGE: ubuntu-rolling, TOXENV: py39-randomorder}
+          - {IMAGE: fedora, TOXENV: py39}
+          - {IMAGE: alpine, TOXENV: py39}
+    name: ${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}
     timeout-minutes: 20
     steps:
       - name: install dependencies
@@ -174,9 +174,9 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          repository: "google/wycheproof"
-          path: "wycheproof"
-          ref: "2196000605e45d91097147c9c71f26b72af58003"
+          repository: google/wycheproof
+          path: wycheproof
+          ref: 2196000605e45d91097147c9c71f26b72af58003
       - run: |
           echo "OPENSSL_FORCE_FIPS_MODE=1" >> $GITHUB_ENV
           echo "CFLAGS=-DUSE_OSRANDOM_RNG_FOR_TESTING" >> $GITHUB_ENV
@@ -188,29 +188,29 @@ jobs:
           rustup component add rustfmt
           rustup component add clippy
       - run: python3 -m pip install tox coverage pip wheel cffi setuptools-rust || true
-      - run: 'tox -- --wycheproof-root="wycheproof"'
+      - run: tox -- --wycheproof-root="wycheproof"
         env:
           TOXENV: ${{ matrix.IMAGE.TOXENV }}
           RUSTUP_HOME: /root/.rustup
           CARGO_TARGET_DIR: ${{ format('{0}/src/rust/target/', github.workspace) }}
       - uses: ./.github/actions/upload-coverage
         with:
-          name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
+          name: ${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}
 
   linux-rust:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
         PYTHON:
-          - {VERSION: "3.9", TOXENV: "py39"}
+          - {VERSION: '3.9', TOXENV: py39}
         RUST:
           # Cover MSRV (and likely next MSRV) and in-dev versions
           - 1.41.0
           - 1.45.0
           - beta
           - nightly
-    name: "${{ matrix.PYTHON.TOXENV }} with Rust ${{ matrix.RUST }}"
+    name: ${{ matrix.PYTHON.TOXENV }} with Rust ${{ matrix.RUST }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -238,24 +238,24 @@ jobs:
           default: true
       - uses: actions/checkout@v4
         with:
-          repository: "google/wycheproof"
-          path: "wycheproof"
-          ref: "2196000605e45d91097147c9c71f26b72af58003"
+          repository: google/wycheproof
+          path: wycheproof
+          ref: 2196000605e45d91097147c9c71f26b72af58003
       - run: python -m pip install --force-reinstall "setuptools<68"
       - run: python -m pip install tox coverage
       - name: Tests
         run: |
-            tox -r --  --color=yes --wycheproof-root=wycheproof
+          tox -r --  --color=yes --wycheproof-root=wycheproof
         env:
           TOXENV: ${{ matrix.PYTHON.TOXENV }}
           CARGO_TARGET_DIR: ${{ format('{0}/src/rust/target/', github.workspace) }}
       - uses: ./.github/actions/upload-coverage
         with:
-          name: "${{ matrix.PYTHON.TOXENV }} with Rust ${{ matrix.RUST }}"
+          name: ${{ matrix.PYTHON.TOXENV }} with Rust ${{ matrix.RUST }}
 
   linux-rust-coverage:
-    runs-on: ubuntu-latest
-    name: "Rust Coverage"
+    runs-on: ubuntu-22.04
+    name: Rust Coverage
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -291,34 +291,34 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          repository: "google/wycheproof"
-          path: "wycheproof"
-          ref: "2196000605e45d91097147c9c71f26b72af58003"
+          repository: google/wycheproof
+          path: wycheproof
+          ref: 2196000605e45d91097147c9c71f26b72af58003
       - run: python -m pip install --force-reinstall "setuptools<68"
       - run: python -m pip install tox coverage
       - name: Tests
         run: |
-            tox -r --  --color=yes --wycheproof-root=wycheproof
+          tox -r --  --color=yes --wycheproof-root=wycheproof
         env:
           TOXENV: py39
           CARGO_TARGET_DIR: ${{ format('{0}/src/rust/target/', github.workspace) }}
-          RUSTFLAGS: "-Zinstrument-coverage"
-          LLVM_PROFILE_FILE: "rust-cov/cov-%p.profraw"
+          RUSTFLAGS: -Zinstrument-coverage
+          LLVM_PROFILE_FILE: rust-cov/cov-%p.profraw
       - name: Process coverage data
         run: |
-            cd src/rust/
-            cargo profdata -- merge -sparse ../../rust-cov/*.profraw -o rust-cov.profdata
-            cargo cov -- export ../../.tox/py39/lib/python3.9/site-packages/cryptography/hazmat/bindings/_rust.abi3.so \
-              -instr-profile=rust-cov.profdata \
-              --ignore-filename-regex='/.cargo/registry' \
-              --ignore-filename-regex='/rustc/' \
-              --ignore-filename-regex='/.rustup/toolchains/' --format=lcov > ../../rust-cov.lcov
+          cd src/rust/
+          cargo profdata -- merge -sparse ../../rust-cov/*.profraw -o rust-cov.profdata
+          cargo cov -- export ../../.tox/py39/lib/python3.9/site-packages/cryptography/hazmat/bindings/_rust.abi3.so \
+            -instr-profile=rust-cov.profdata \
+            --ignore-filename-regex='/.cargo/registry' \
+            --ignore-filename-regex='/rustc/' \
+            --ignore-filename-regex='/.rustup/toolchains/' --format=lcov > ../../rust-cov.lcov
 
-            sed -E -i 's/SF:src\/(.*)/SF:src\/rust\/src\/\1/g' ../../rust-cov.lcov
+          sed -E -i 's/SF:src\/(.*)/SF:src\/rust\/src\/\1/g' ../../rust-cov.lcov
 
       - uses: ./.github/actions/upload-coverage
         with:
-          name: "Rust Coverage"
+          name: Rust Coverage
 
 
   macos:
@@ -327,11 +327,11 @@ jobs:
       fail-fast: false
       matrix:
         PYTHON:
-          - {VERSION: "3.6", TOXENV: "py36", EXTRA_CFLAGS: ""}
-          - {VERSION: "3.9", TOXENV: "py39", EXTRA_CFLAGS: "-DUSE_OSRANDOM_RNG_FOR_TESTING"}
+          - {VERSION: '3.6', TOXENV: py36, EXTRA_CFLAGS: ''}
+          - {VERSION: '3.9', TOXENV: py39, EXTRA_CFLAGS: -DUSE_OSRANDOM_RNG_FOR_TESTING}
         RUST:
           - stable
-    name: "${{ matrix.PYTHON.TOXENV }} on macOS"
+    name: ${{ matrix.PYTHON.TOXENV }} on macOS
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -362,9 +362,9 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          repository: "google/wycheproof"
-          path: "wycheproof"
-          ref: "2196000605e45d91097147c9c71f26b72af58003"
+          repository: google/wycheproof
+          path: wycheproof
+          ref: 2196000605e45d91097147c9c71f26b72af58003
 
       - name: Download OpenSSL
         run: |
@@ -384,23 +384,23 @@ jobs:
 
       - uses: ./.github/actions/upload-coverage
         with:
-          name: "${{ matrix.PYTHON.TOXENV }} on macOS"
+          name: ${{ matrix.PYTHON.TOXENV }} on macOS
 
   windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
         WINDOWS:
-          - {ARCH: 'x86', WINDOWS: 'win32', RUST_TRIPLE: 'i686-pc-windows-msvc'}
-          - {ARCH: 'x64', WINDOWS: 'win64', RUST_TRIPLE: 'x86_64-pc-windows-msvc'}
+          - {ARCH: x86, WINDOWS: win32, RUST_TRIPLE: i686-pc-windows-msvc}
+          - {ARCH: x64, WINDOWS: win64, RUST_TRIPLE: x86_64-pc-windows-msvc}
         PYTHON:
-          - {VERSION: "3.6", TOXENV: "py36", MSVC_VERSION: "2019", CL_FLAGS: ""}
-          - {VERSION: "3.9", TOXENV: "py39", MSVC_VERSION: "2019", CL_FLAGS: "/D USE_OSRANDOM_RNG_FOR_TESTING"}
+          - {VERSION: '3.6', TOXENV: py36, MSVC_VERSION: '2019', CL_FLAGS: ''}
+          - {VERSION: '3.9', TOXENV: py39, MSVC_VERSION: '2019', CL_FLAGS: /D USE_OSRANDOM_RNG_FOR_TESTING}
         RUST:
           - stable
         JOB_NUMBER: [0, 1, 2, 3]
-    name: "${{ matrix.PYTHON.TOXENV }} on ${{ matrix.WINDOWS.WINDOWS }} (part ${{ matrix.JOB_NUMBER }})"
+    name: ${{ matrix.PYTHON.TOXENV }} on ${{ matrix.WINDOWS.WINDOWS }} (part ${{ matrix.JOB_NUMBER }})
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -433,18 +433,18 @@ jobs:
       - run: python -m pip install tox requests coverage
       - name: Download OpenSSL
         run: |
-            python .github/workflows/download_openssl.py windows openssl-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.MSVC_VERSION }}
-            echo "INCLUDE=C:/openssl-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.MSVC_VERSION }}/include;$INCLUDE" >> $GITHUB_ENV
-            echo "LIB=C:/openssl-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.MSVC_VERSION }}/lib;$LIB" >> $GITHUB_ENV
-            echo "CL=${{ matrix.PYTHON.CL_FLAGS }}" >> $GITHUB_ENV
+          python .github/workflows/download_openssl.py windows openssl-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.MSVC_VERSION }}
+          echo "INCLUDE=C:/openssl-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.MSVC_VERSION }}/include;$INCLUDE" >> $GITHUB_ENV
+          echo "LIB=C:/openssl-${{ matrix.WINDOWS.WINDOWS }}-${{ matrix.PYTHON.MSVC_VERSION }}/lib;$LIB" >> $GITHUB_ENV
+          echo "CL=${{ matrix.PYTHON.CL_FLAGS }}" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
       - uses: actions/checkout@v4
         with:
-          repository: "google/wycheproof"
-          path: "wycheproof"
-          ref: "2196000605e45d91097147c9c71f26b72af58003"
+          repository: google/wycheproof
+          path: wycheproof
+          ref: 2196000605e45d91097147c9c71f26b72af58003
 
       - run: tox -r -- --color=yes --wycheproof-root=wycheproof --num-shards=4 --shard-id=${{ matrix.JOB_NUMBER }}
         env:
@@ -453,10 +453,10 @@ jobs:
 
       - uses: ./.github/actions/upload-coverage
         with:
-          name: "${{ matrix.PYTHON.TOXENV }} on ${{ matrix.WINDOWS.WINDOWS }} (part ${{ matrix.JOB_NUMBER }})"
+          name: ${{ matrix.PYTHON.TOXENV }} on ${{ matrix.WINDOWS.WINDOWS }} (part ${{ matrix.JOB_NUMBER }})
 
   linux-downstream:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -472,7 +472,7 @@ jobs:
           - stable
         PYTHON:
           - 3.7
-    name: "Downstream tests for ${{ matrix.DOWNSTREAM }}"
+    name: Downstream tests for ${{ matrix.DOWNSTREAM }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

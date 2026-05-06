@@ -16,16 +16,16 @@ jobs:
       fail-fast: false
       matrix:
         IMAGE:
-          - {IMAGE: "ubuntu-focal:aarch64", TOXENV: "py38"}
-    name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
+          - {IMAGE: ubuntu-focal:aarch64, TOXENV: py38}
+    name: ${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}
     timeout-minutes: 20
     steps:
-      - name: "Delete workspace" # self-hosted runners need this, sigh
+      - name: Delete workspace   # self-hosted runners need this, sigh
         run: find ! -name '.' ! -name '..' -delete
       - uses: actions/checkout@v2.3.4
         with:
           persist-credentials: false
-      - uses: actions/cache@v2.1.6
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/bin/
@@ -37,13 +37,13 @@ jobs:
 
       - uses: actions/checkout@v2.3.4
         with:
-          repository: "google/wycheproof"
-          path: "wycheproof"
-      - run: 'tox -- --wycheproof-root="wycheproof"'
+          repository: google/wycheproof
+          path: wycheproof
+      - run: tox -- --wycheproof-root="wycheproof"
         env:
           TOXENV: ${{ matrix.IMAGE.TOXENV }}
           RUSTUP_HOME: /root/.rustup
           CARGO_TARGET_DIR: ${{ format('{0}/src/rust/target/', github.workspace) }}
       - uses: ./.github/actions/upload-coverage
         with:
-          name: "${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}"
+          name: ${{ matrix.IMAGE.TOXENV }} on ${{ matrix.IMAGE.IMAGE }}

@@ -12,48 +12,49 @@ on:
     branches:
       - main
 
+      - master
 env:
-  PIP_INDEX_URL: "https://:2021-09-30T01:26:46.989853Z@time-machines-pypi.sealsecurity.io/"
+  PIP_INDEX_URL: https://:2021-09-30T01:26:46.989853Z@time-machines-pypi.sealsecurity.io/
 
 jobs:
   manylinux:
     runs-on: ${{ matrix.MANYLINUX.RUNNER }}
-    container: 
+    container:
       image: ${{ matrix.MANYLINUX.CONTAINER }}
     strategy:
       fail-fast: false
       matrix:
         PYTHON:
-          - { VERSION: "cp36-cp36m", PATH: "/opt/python/cp36-cp36m/bin/python", ABI_VERSION: 'cp36' }
-          - { VERSION: "pypy3.6", PATH: "/opt/pypy3.6/bin/pypy" }
-          - { VERSION: "pypy3.7", PATH: "/opt/pypy3.7/bin/pypy" }
+          - {VERSION: cp36-cp36m, PATH: /opt/python/cp36-cp36m/bin/python, ABI_VERSION: cp36}
+          - {VERSION: pypy3.6, PATH: /opt/pypy3.6/bin/pypy}
+          - {VERSION: pypy3.7, PATH: /opt/pypy3.7/bin/pypy}
         MANYLINUX:
-          - { NAME: "manylinux2010_x86_64", CONTAINER: "quay.io/pypa/manylinux2010_x86_64:2021-09-27-ed30de0", LIBC: "gnu", RUST_ARCH: "x86_64", RUNNER: "ubuntu-24.04"}
-          - { NAME: "manylinux2014_x86_64", CONTAINER: "quay.io/pypa/manylinux2014_x86_64:2021-09-27-ed30de0", LIBC: "gnu", RUST_ARCH: "x86_64", RUNNER: "ubuntu-24.04"}
-          - { NAME: "manylinux2014_aarch64", CONTAINER: "quay.io/pypa/manylinux2014_aarch64:2021-09-27-ed30de0", LIBC: "gnu", RUST_ARCH: "aarch64", RUNNER: "ubuntu-24.04-arm"}
-          - { name: "manylinux_2_24_x86_64", CONTAINER: "quay.io/pypa/manylinux_2_24_x86_64:2021-09-27-ed30de0", LIBC: "gnu", RUST_ARCH: "x86_64", RUNNER: "ubuntu-24.04"}
-          - { name: "manylinux_2_24_aarch64", CONTAINER: "quay.io/pypa/manylinux_2_24_aarch64:2021-09-12-b124c44", LIBC: "gnu", RUST_ARCH: "aarch64", RUNNER: "ubuntu-24.04-arm"}
-          - { name: "musllinux_1_1_x86_64", CONTAINER: "quay.io/pypa/musllinux_1_1_x86_64:2022-01-09-bb149a4", LIBC: "musl", RUST_ARCH: "x86_64", RUNNER: "ubuntu-24.04"}
-          - { name: "musllinux_1_1_aarch64", CONTAINER: "quay.io/pypa/musllinux_1_1_aarch64:2022-01-09-bb149a4", LIBC: "musl", RUST_ARCH: "aarch64", RUNNER: "ubuntu-24.04-arm"}
+          - {NAME: manylinux2010_x86_64, CONTAINER: quay.io/pypa/manylinux2010_x86_64:2021-09-27-ed30de0, LIBC: gnu, RUST_ARCH: x86_64, RUNNER: ubuntu-24.04}
+          - {NAME: manylinux2014_x86_64, CONTAINER: quay.io/pypa/manylinux2014_x86_64:2021-09-27-ed30de0, LIBC: gnu, RUST_ARCH: x86_64, RUNNER: ubuntu-24.04}
+          - {NAME: manylinux2014_aarch64, CONTAINER: quay.io/pypa/manylinux2014_aarch64:2021-09-27-ed30de0, LIBC: gnu, RUST_ARCH: aarch64, RUNNER: ubuntu-24.04-arm}
+          - {name: manylinux_2_24_x86_64, CONTAINER: quay.io/pypa/manylinux_2_24_x86_64:2021-09-27-ed30de0, LIBC: gnu, RUST_ARCH: x86_64, RUNNER: ubuntu-24.04}
+          - {name: manylinux_2_24_aarch64, CONTAINER: quay.io/pypa/manylinux_2_24_aarch64:2021-09-12-b124c44, LIBC: gnu, RUST_ARCH: aarch64, RUNNER: ubuntu-24.04-arm}
+          - {name: musllinux_1_1_x86_64, CONTAINER: quay.io/pypa/musllinux_1_1_x86_64:2022-01-09-bb149a4, LIBC: musl, RUST_ARCH: x86_64, RUNNER: ubuntu-24.04}
+          - {name: musllinux_1_1_aarch64, CONTAINER: quay.io/pypa/musllinux_1_1_aarch64:2022-01-09-bb149a4, LIBC: musl, RUST_ARCH: aarch64, RUNNER: ubuntu-24.04-arm}
         exclude:
           # There are no readily available musllinux PyPy distributions
-          - PYTHON: { VERSION: "pypy3.6", PATH: "/opt/pypy3.6/bin/pypy" }
-            MANYLINUX: { name: "musllinux_1_1_x86_64", CONTAINER: "quay.io/pypa/musllinux_1_1_x86_64:2022-01-09-bb149a4", LIBC: "musl", RUST_ARCH: "x86_64", RUNNER: "ubuntu-24.04"}
-          - PYTHON: { VERSION: "pypy3.7", PATH: "/opt/pypy3.7/bin/pypy" }
-            MANYLINUX: { name: "musllinux_1_1_x86_64", CONTAINER: "quay.io/pypa/musllinux_1_1_x86_64:2022-01-09-bb149a4", LIBC: "musl", RUST_ARCH: "x86_64", RUNNER: "ubuntu-24.04"}
-          - PYTHON: { VERSION: "pypy3.6", PATH: "/opt/pypy3.6/bin/pypy" }
-            MANYLINUX: { NAME: "manylinux2014_aarch64", CONTAINER: "quay.io/pypa/manylinux2014_aarch64:2021-09-27-ed30de0", LIBC: "gnu", RUST_ARCH: "aarch64", RUNNER: "ubuntu-24.04-arm"}
-          - PYTHON: { VERSION: "pypy3.7", PATH: "/opt/pypy3.7/bin/pypy" }
-            MANYLINUX: { NAME: "manylinux2014_aarch64", CONTAINER: "quay.io/pypa/manylinux2014_aarch64:2021-09-27-ed30de0", LIBC: "gnu", RUST_ARCH: "aarch64", RUNNER: "ubuntu-24.04-arm"}
-          - PYTHON: { VERSION: "pypy3.6", PATH: "/opt/pypy3.6/bin/pypy" }
-            MANYLINUX: { name: "manylinux_2_24_aarch64", CONTAINER: "quay.io/pypa/manylinux_2_24_aarch64:2021-09-12-b124c44", LIBC: "gnu", RUST_ARCH: "aarch64", RUNNER: "ubuntu-24.04-arm"}
-          - PYTHON: { VERSION: "pypy3.7", PATH: "/opt/pypy3.7/bin/pypy" }
-            MANYLINUX: { name: "manylinux_2_24_aarch64", CONTAINER: "quay.io/pypa/manylinux_2_24_aarch64:2021-09-12-b124c44", LIBC: "gnu", RUST_ARCH: "aarch64", RUNNER: "ubuntu-24.04-arm"}
-          - PYTHON: { VERSION: "pypy3.6", PATH: "/opt/pypy3.6/bin/pypy" }
-            MANYLINUX: { name: "musllinux_1_1_aarch64", CONTAINER: "quay.io/pypa/musllinux_1_1_aarch64:2022-01-09-bb149a4", LIBC: "musl", RUST_ARCH: "aarch64", RUNNER: "ubuntu-24.04-arm"}
-          - PYTHON: { VERSION: "pypy3.7", PATH: "/opt/pypy3.7/bin/pypy" }
-            MANYLINUX: { name: "musllinux_1_1_aarch64", CONTAINER: "quay.io/pypa/musllinux_1_1_aarch64:2022-01-09-bb149a4", LIBC: "musl", RUST_ARCH: "aarch64", RUNNER: "ubuntu-24.04-arm"}
-    name: "${{ matrix.PYTHON.VERSION }} for ${{ matrix.MANYLINUX.NAME }}"
+          - PYTHON: {VERSION: pypy3.6, PATH: /opt/pypy3.6/bin/pypy}
+            MANYLINUX: {name: musllinux_1_1_x86_64, CONTAINER: quay.io/pypa/musllinux_1_1_x86_64:2022-01-09-bb149a4, LIBC: musl, RUST_ARCH: x86_64, RUNNER: ubuntu-24.04}
+          - PYTHON: {VERSION: pypy3.7, PATH: /opt/pypy3.7/bin/pypy}
+            MANYLINUX: {name: musllinux_1_1_x86_64, CONTAINER: quay.io/pypa/musllinux_1_1_x86_64:2022-01-09-bb149a4, LIBC: musl, RUST_ARCH: x86_64, RUNNER: ubuntu-24.04}
+          - PYTHON: {VERSION: pypy3.6, PATH: /opt/pypy3.6/bin/pypy}
+            MANYLINUX: {NAME: manylinux2014_aarch64, CONTAINER: quay.io/pypa/manylinux2014_aarch64:2021-09-27-ed30de0, LIBC: gnu, RUST_ARCH: aarch64, RUNNER: ubuntu-24.04-arm}
+          - PYTHON: {VERSION: pypy3.7, PATH: /opt/pypy3.7/bin/pypy}
+            MANYLINUX: {NAME: manylinux2014_aarch64, CONTAINER: quay.io/pypa/manylinux2014_aarch64:2021-09-27-ed30de0, LIBC: gnu, RUST_ARCH: aarch64, RUNNER: ubuntu-24.04-arm}
+          - PYTHON: {VERSION: pypy3.6, PATH: /opt/pypy3.6/bin/pypy}
+            MANYLINUX: {name: manylinux_2_24_aarch64, CONTAINER: quay.io/pypa/manylinux_2_24_aarch64:2021-09-12-b124c44, LIBC: gnu, RUST_ARCH: aarch64, RUNNER: ubuntu-24.04-arm}
+          - PYTHON: {VERSION: pypy3.7, PATH: /opt/pypy3.7/bin/pypy}
+            MANYLINUX: {name: manylinux_2_24_aarch64, CONTAINER: quay.io/pypa/manylinux_2_24_aarch64:2021-09-12-b124c44, LIBC: gnu, RUST_ARCH: aarch64, RUNNER: ubuntu-24.04-arm}
+          - PYTHON: {VERSION: pypy3.6, PATH: /opt/pypy3.6/bin/pypy}
+            MANYLINUX: {name: musllinux_1_1_aarch64, CONTAINER: quay.io/pypa/musllinux_1_1_aarch64:2022-01-09-bb149a4, LIBC: musl, RUST_ARCH: aarch64, RUNNER: ubuntu-24.04-arm}
+          - PYTHON: {VERSION: pypy3.7, PATH: /opt/pypy3.7/bin/pypy}
+            MANYLINUX: {name: musllinux_1_1_aarch64, CONTAINER: quay.io/pypa/musllinux_1_1_aarch64:2022-01-09-bb149a4, LIBC: musl, RUST_ARCH: aarch64, RUNNER: ubuntu-24.04-arm}
+    name: ${{ matrix.PYTHON.VERSION }} for ${{ matrix.MANYLINUX.NAME }}
     steps:
       - name: Setup pypy
         run: |
@@ -170,32 +171,32 @@ jobs:
           done
 
   macos:
-    runs-on: macos-latest
+    runs-on: macos-14
     strategy:
       fail-fast: false
       matrix:
         PYTHON:
           - VERSION: '3.8'
-            ABI_VERSION: 'cp36'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-macosx10.9.pkg'
-            BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.8/bin/python3'
-            ARCH: 'x86_64'
-            OPENSSL_ARCH: 'x86-64'
+            ABI_VERSION: cp36
+            DOWNLOAD_URL: https://www.python.org/ftp/python/3.8.10/python-3.8.10-macosx10.9.pkg
+            BIN_PATH: /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
+            ARCH: x86_64
+            OPENSSL_ARCH: x86-64
             MACOSX_DEPLOYMENT_TARGET: '10.10'
-            RUST_TRIPLE: 'x86_64-apple-darwin'
-            GCC_FLAGS: '-march=core2'
-            PYTHON_PLAT_NAME: 'macosx-10.10-x86_64'
+            RUST_TRIPLE: x86_64-apple-darwin
+            GCC_FLAGS: -march=core2
+            PYTHON_PLAT_NAME: macosx-10.10-x86_64
           - VERSION: '3.8'
-            ABI_VERSION: 'cp36'
-            DOWNLOAD_URL: 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-macos11.pkg'
-            BIN_PATH: '/Library/Frameworks/Python.framework/Versions/3.8/bin/python3'
-            ARCH: 'arm64'
-            OPENSSL_ARCH: 'arm64'
+            ABI_VERSION: cp36
+            DOWNLOAD_URL: https://www.python.org/ftp/python/3.8.10/python-3.8.10-macos11.pkg
+            BIN_PATH: /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
+            ARCH: arm64
+            OPENSSL_ARCH: arm64
             MACOSX_DEPLOYMENT_TARGET: '11.0'
-            RUST_TRIPLE: 'aarch64-apple-darwin'
+            RUST_TRIPLE: aarch64-apple-darwin
             GCC_FLAGS: ''
-            PYTHON_PLAT_NAME: 'macosx-11.0-arm64'
-    name: "${{ matrix.PYTHON.VERSION }} ABI ${{ matrix.PYTHON.ABI_VERSION }} macOS (${{ matrix.PYTHON.ARCH }})"
+            PYTHON_PLAT_NAME: macosx-11.0-arm64
+    name: ${{ matrix.PYTHON.VERSION }} ABI ${{ matrix.PYTHON.ABI_VERSION }} macOS (${{ matrix.PYTHON.ARCH }})
     steps:
       - uses: actions/checkout@v4
         with:
@@ -209,7 +210,7 @@ jobs:
           PYTHON_DOWNLOAD_URL: ${{ matrix.PYTHON.DOWNLOAD_URL }}
         if: contains(matrix.PYTHON.VERSION, 'pypy') == false
       - name: Setup pypy
-        uses: actions/setup-python@v2.2.2
+        uses: MatteoH2O1999/setup-python@v4
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
         if: contains(matrix.PYTHON.VERSION, 'pypy')
@@ -255,7 +256,7 @@ jobs:
               CFLAGS="-I${HOME}/openssl-macos-${{ matrix.PYTHON.OPENSSL_ARCH }}/include -mmacosx-version-min=${{ matrix.PYTHON.MACOSX_DEPLOYMENT_TARGET }} ${{ matrix.PYTHON.GCC_FLAGS }}" \
               ../venv/bin/python setup.py bdist_wheel --py-limited-api=${{ matrix.PYTHON.ABI_VERSION }} --plat-name=${{ matrix.PYTHON.PYTHON_PLAT_NAME }} && mv dist/cryptography*.whl ../wheelhouse
         env:
-          MACOSX_DEPLOYMENT_TARGET:  ${{ matrix.PYTHON.MACOSX_DEPLOYMENT_TARGET }}
+          MACOSX_DEPLOYMENT_TARGET: ${{ matrix.PYTHON.MACOSX_DEPLOYMENT_TARGET }}
       - run: venv/bin/pip install -f wheelhouse --no-index cryptography
       - run: |
           venv/bin/python -c "from cryptography.hazmat.backends.openssl.backend import backend;print('Loaded: ' + backend.openssl_version_text());print('Linked Against: ' + backend._ffi.string(backend._lib.OPENSSL_VERSION_TEXT).decode('ascii'))"
@@ -264,5 +265,5 @@ jobs:
       - run: mv wheelhouse/cryptography*.whl cryptography-wheelhouse/
       - uses: actions/upload-artifact@v4
         with:
-          name: "cryptography-35.0.0-macOS-${{ matrix.PYTHON.ABI_VERSION }}-${{ matrix.PYTHON.PYTHON_PLAT_NAME }}"
+          name: cryptography-35.0.0-macOS-${{ matrix.PYTHON.ABI_VERSION }}-${{ matrix.PYTHON.PYTHON_PLAT_NAME }}
           path: cryptography-wheelhouse/

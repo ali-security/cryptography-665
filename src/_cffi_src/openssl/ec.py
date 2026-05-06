@@ -94,6 +94,9 @@ int EC_METHOD_get_field_type(const EC_METHOD *);
 const char *EC_curve_nid2nist(int);
 
 int EC_GROUP_get_asn1_flag(const EC_GROUP *);
+
+int EC_KEY_check_key(const EC_KEY *);
+int EC_GROUP_get_cofactor(const EC_GROUP *, BIGNUM *, BN_CTX *);
 """
 
 CUSTOMIZATIONS = """
